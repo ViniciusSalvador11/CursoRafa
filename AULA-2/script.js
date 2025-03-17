@@ -1,25 +1,65 @@
+let tarefas = []
+
 function adicionarTarefa() {
-    // Adiciona uma mensagem de tarefa adiocionada
-    let mensagem = "Tarefa adicionada com sucesso!";
 
-    //pega o input do usuario pelo id 
-    let inputTarefa = document.getElementById("inputTarefa")
-    // Recebe o valor digitado pelo usuario
-    let tarefa = inputTarefa.value
-    //recebe a mensagem de sucesso
-    document.getElementById("mensagem").textContent = mensagem;
+    const inputTarefa = document.getElementById("inputTarefa")
+    let tarefa = inputTarefa.value.trim()
 
-    // pega pelo id a lista no index
-    let listaTarefas = document.getElementById("listaTarefas")
-    //cria um elemento de lista
-    let novaTarefa = document.createElement("li")
+    const mensagem = document.getElementById("mensagem")
 
-    //sobrescrecve o valor digitado pelo usuario
-    novaTarefa.textContent = tarefa
+    if (tarefa == "") {
+        let mensagemErro = "Digite uma tarefa para adiciona-la para sua lista!"
+        mensagem.textContent = mensagemErro
+    } else {
+        let mensagemSucesso = "Tarefa adicionada com sucesso!";
+        mensagem.textContent = mensagemSucesso;
+        tarefas.push(tarefa)
+        renderizarTarefas()
+    }
 
-    //adiciona a lista uma nova tarefa
-    listaTarefas.appendChild(novaTarefa)
-
-    //apaga o input depois de adicionada tarefa com sucesso
     inputTarefa.value = ""
+}
+
+function renderizarTarefas() {
+    const listaTarefas = document.getElementById("listaTarefas")
+    listaTarefas.innerHTML = ""
+
+    for (let i = 0; i < tarefas.length; i++) {
+        let novaTarefa = document.createElement("li")
+        novaTarefa.textContent = tarefas[i]
+
+        let botaoRemover = document.createElement("button")
+        botaoRemover.className = "remover"
+        botaoRemover.textContent = "Remover"
+        botaoRemover.onclick = () => removerTarefa(i)
+
+        let botaoEditar = document.createElement("button")
+        botaoEditar.className = "editar"
+        botaoEditar.textContent = "Editar"
+        botaoEditar.onclick = () => editarTarefa(i)
+
+        novaTarefa.appendChild(botaoRemover)
+        novaTarefa.appendChild(botaoEditar)
+        listaTarefas.appendChild(novaTarefa)
+    }
+}
+
+function removerTarefa(i) {
+    tarefas.splice(i, 1)
+    renderizarTarefas()
+}
+
+function editarTarefa(i) {
+    let tarefaEditada = prompt("Edite a traefa:")
+    if (tarefaEditada.trim() !== "") {
+        tarefas[i] = tarefaEditada
+        renderizarTarefas()
+    }
+}
+
+function limparLista() {
+    tarefas.length = 0
+    renderizarTarefas()
+    const mensagem = document.getElementById("mensagem")
+    mensagem.textContent = "Lista de tarefas limpa com sucesso!"
 }
